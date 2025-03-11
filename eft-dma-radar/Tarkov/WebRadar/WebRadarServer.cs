@@ -45,8 +45,6 @@ namespace eft_dma_radar.Tarkov.WebRadar
             _webHost = Host.CreateDefaultBuilder()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseUrls($"http://0.0.0.0:{port}");
-
                     webBuilder.UseKestrel()
                         .ConfigureServices(services =>
                         {
@@ -68,12 +66,9 @@ namespace eft_dma_radar.Tarkov.WebRadar
                                     builder.WithOrigins("http://192.168.50.160:5010")
                                            .AllowAnyHeader()
                                            .AllowAnyMethod()
-                                           .SetIsOriginAllowed(_ => true)
-                                           .SetIsOriginAllowedToAllowWildcardSubdomains()
-                                           .AllowCredentials();                                           
+                                           .SetIsOriginAllowedToAllowWildcardSubdomains();
                                 });
                             });
-                         
                         })
                         .Configure(app =>
                         {

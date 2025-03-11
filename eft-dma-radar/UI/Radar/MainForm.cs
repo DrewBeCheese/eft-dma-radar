@@ -542,6 +542,17 @@ namespace eft_dma_radar.UI.Radar
             // Apply the changes immediately
             MemPatchFeature<HideRaidCode>.Instance.TryApply();
         }
+        private void checkBox_streamerMode_CheckedChanged(object sender, EventArgs e)
+        {
+            // Update config
+            Program.Config.MemWrites.StreamerMode = checkBox_streamerMode.Checked;
+        
+            // Enable or disable the feature
+            MemPatchFeature<StreamerMode>.Instance.Enabled = checkBox_streamerMode.Checked;
+        
+            // Apply the changes immediately
+            MemPatchFeature<StreamerMode>.Instance.TryApply();
+        }
         private void checkBox_LootWishlist_CheckedChanged(object sender, EventArgs e)
         {
             Config.LootWishlist = checkBox_LootWishlist.Checked;
@@ -568,7 +579,31 @@ namespace eft_dma_radar.UI.Radar
             if (radioButton_Loot_VendorPrice.Checked)
                 Config.LootPriceMode = LootPriceMode.Trader;
         }
+        private void textBox_VischeckVisColorPMC_TextChanged(object sender, EventArgs e)
+        {
+            Chams.Config.VisibleColorPMC = textBox_VischeckVisColorPMC.Text;
+        }
 
+        private void textBox_VischeckInvisColorPMC_TextChanged(object sender, EventArgs e)
+        {
+            Chams.Config.InvisibleColorPMC = textBox_VischeckInvisColorPMC.Text;
+        }
+
+        private void button_VischeckVisColorPickPMC_Click(object sender, EventArgs e)
+        {
+            if (colorPicker1.ShowDialog() is DialogResult.OK)
+            {
+                textBox_VischeckVisColorPMC.Text = colorPicker1.Color.ToSKColor().ToString();
+            }
+        }
+
+        private void button_VischeckInvisColorPickPMC_Click(object sender, EventArgs e)
+        {
+            if (colorPicker1.ShowDialog() is DialogResult.OK)
+            {
+                textBox_VischeckInvisColorPMC.Text = colorPicker1.Color.ToSKColor().ToString();
+            }
+        }
         private void textBox_VischeckVisColor_TextChanged(object sender, EventArgs e)
         {
             Chams.Config.VisibleColor = textBox_VischeckVisColor.Text;
@@ -629,9 +664,13 @@ namespace eft_dma_radar.UI.Radar
 
         private void ToggleAdvMemwriteFeatures(bool enabled)
         {
-            radioButton_Chams_Vischeck.Enabled = enabled;
+            radioButton_Chams_VisCheckGlow.Enabled = enabled;
+            radioButton_Chams_VischeckFlat.Enabled = enabled;
+            radioButton_Chams_VisCheckWireframe.Enabled = enabled;
             radioButton_Chams_Visible.Enabled = enabled;
             checkBox_AntiPage.Enabled = enabled;
+            checkBox_streamerMode.Enabled = enabled;
+            checkBox_hideRaidcode.Enabled = enabled;
         }
         private void checkBox_FullBright_CheckedChanged(object sender, EventArgs e)
         {
@@ -810,11 +849,27 @@ namespace eft_dma_radar.UI.Radar
                 Chams.Config.Mode = ChamsManager.ChamsMode.Basic;
         }
 
-        private void radioButton_Chams_Vischeck_CheckedChanged(object sender, EventArgs e)
+        private void radioButton_Chams_VisCheckGlow_CheckedChanged(object sender, EventArgs e)
         {
-            var enabled = radioButton_Chams_Vischeck.Checked;
+            var enabled = radioButton_Chams_VisCheckGlow.Checked;
             if (enabled)
-                Chams.Config.Mode = ChamsManager.ChamsMode.VisCheck;
+                Chams.Config.Mode = ChamsManager.ChamsMode.VisCheckGlow;
+            flowLayoutPanel_AdvancedChams.Enabled = enabled;
+        }
+
+        private void radioButton_Chams_VischeckFlat_CheckedChanged(object sender, EventArgs e)
+        {
+            var enabled = radioButton_Chams_VischeckFlat.Checked;
+            if (enabled)
+                Chams.Config.Mode = ChamsManager.ChamsMode.VisCheckFlat;
+            flowLayoutPanel_AdvancedChams.Enabled = enabled;
+        }
+
+        private void radioButton_Chams_VisCheckWireframe_CheckedChanged(object sender, EventArgs e)
+        {
+            var enabled = radioButton_Chams_VisCheckWireframe.Checked;
+            if (enabled)
+                Chams.Config.Mode = ChamsManager.ChamsMode.VisCheckWireframe;
             flowLayoutPanel_AdvancedChams.Enabled = enabled;
         }
 
@@ -1627,6 +1682,8 @@ namespace eft_dma_radar.UI.Radar
         {
             toolTip1.SetToolTip(textBox_VischeckVisColor, "Set the VISIBLE color of the Vischeck Chams. Must be set before chams are injected.");
             toolTip1.SetToolTip(textBox_VischeckInvisColor, "Set the INVISIBLE color of the Vischeck Chams. Must be set before chams are injected.");
+            toolTip1.SetToolTip(textBox_VischeckInvisColorPMC, "Set the INVISIBLE color of the Vischeck Chams for PMCs and Bosses. Must be set before chams are injected.");
+            toolTip1.SetToolTip(textBox_VischeckVisColorPMC, "Set the INVISIBLE color of the Vischeck Chams for PMCs and Bosses. Must be set before chams are injected.");
             toolTip1.SetToolTip(button_VischeckVisColorPick, "Set the VISIBLE color of the Vischeck Chams. Must be set before chams are injected.");
             toolTip1.SetToolTip(button_VischeckInvisColorPick, "Set the INVISIBLE color of the Vischeck Chams. Must be set before chams are injected.");
             toolTip1.SetToolTip(checkBox_FastLoadUnload, "Allows you to pack/unpack magazines super fast.");
@@ -1706,7 +1763,7 @@ namespace eft_dma_radar.UI.Radar
                 "These basic chams will only show when a target is VISIBLE. Cannot change color (always White).");
             toolTip1.SetToolTip(radioButton_Chams_Visible,
                 "These advanced chams will only show when a target is VISIBLE. You can change the color(s).");
-            toolTip1.SetToolTip(radioButton_Chams_Vischeck,
+            toolTip1.SetToolTip(radioButton_Chams_VisCheckGlow,
                 "These advanced chams (vischeck) will show different colors when a target is VISIBLE/INVISIBLE. You can change the color(s).");
             toolTip1.SetToolTip(checkBox_AlwaysDaySunny,
                 "Enables the Always Day/Sunny feature. This sets the In-Raid time to always 12 Noon (day), and sets the weather to sunny/clear.");
@@ -1820,6 +1877,11 @@ namespace eft_dma_radar.UI.Radar
             toolTip1.SetToolTip(checkBox_AntiPage, "Attempts to prevent memory paging out. This can help if you are experiencing 'paging out' (see the FAQ in Discord).\n" +
                 "For best results start the Radar Client BEFORE opening the Game.");
             toolTip1.SetToolTip(checkBox_hideRaidcode, "Hides the Raid Code from displaying in the bottom left corner of the Game. Send your Cheating clips safely!");
+            toolTip1.SetToolTip(checkBox_streamerMode, "Enables Streamer Mode. This will hide your player name, change your level and other things from displaying in the Game:\n" +
+                "- To disable uncheck the box and restart game\n" +
+                "- Uses shellcode so it is a more risky feature.\n" +
+                "- Only Spoofs names, level etc locally.\n" +
+                "\n\nWARNING: These features use a riskier injection technique. Use at your own risk.");
             toolTip1.SetToolTip(checkBox_AIAimlines, "Enables dynamic aimlines for AI Players. When you are being aimed at the aimlines will extend.");
             toolTip1.SetToolTip(checkBox_LootWishlist, "Tracks loot on your account's Loot Wishlist (Manual Adds Only, does not work for Automatically Added Items).");
             toolTip1.SetToolTip(checkedListBox_QuestHelper, "Active Quest List (populates once you are in raid). Uncheck a quest to untrack it.");
@@ -1861,6 +1923,7 @@ namespace eft_dma_radar.UI.Radar
             checkBox_AdvancedMemWrites.CheckedChanged += checkBox_AdvancedMemWrites_CheckedChanged;
             /// Set Features
             checkBox_hideRaidcode.Checked = MemPatchFeature<HideRaidCode>.Instance.Enabled;
+            checkBox_streamerMode.Checked = MemPatchFeature<StreamerMode>.Instance.Enabled;
             checkBox_AntiPage.Checked = Config.MemWrites.AntiPage;
             checkBox_EnableMemWrite.Checked = MemWrites.Enabled;
             checkBox_NoRecoilSway.Checked = MemWriteFeature<NoRecoil>.Instance.Enabled;
@@ -1908,11 +1971,17 @@ namespace eft_dma_radar.UI.Radar
                 case ChamsManager.ChamsMode.Basic:
                     radioButton_Chams_Basic.Checked = true;
                     break;
-                case ChamsManager.ChamsMode.VisCheck:
-                    radioButton_Chams_Vischeck.Checked = true;
+                case ChamsManager.ChamsMode.VisCheckGlow:
+                    radioButton_Chams_VisCheckGlow.Checked = true;
                     break;
                 case ChamsManager.ChamsMode.Visible:
                     radioButton_Chams_Visible.Checked = true;
+                    break;
+                case ChamsManager.ChamsMode.VisCheckFlat:
+                    radioButton_Chams_VischeckFlat.Checked = true;
+                    break;
+                case ChamsManager.ChamsMode.VisCheckWireframe:
+                    radioButton_Chams_VisCheckWireframe.Checked = true;
                     break;
             }
         }
@@ -2078,6 +2147,9 @@ namespace eft_dma_radar.UI.Radar
             textBox_ResHeight.Text = Config.MonitorHeight.ToString();
             textBox_VischeckVisColor.Text = Chams.Config.VisibleColor;
             textBox_VischeckInvisColor.Text = Chams.Config.InvisibleColor;
+            textBox_VischeckInvisColorPMC.Text = Chams.Config.InvisibleColorPMC;
+            textBox_VischeckVisColorPMC.Text = Chams.Config.VisibleColorPMC;
+
             CameraManagerBase.UpdateViewportRes();
             LoadESPConfig();
             InitializeContainers();
@@ -3556,9 +3628,29 @@ namespace eft_dma_radar.UI.Radar
                 textBox_WebRadarPort.Enabled = true;
             }
         }
+        private async void StartWebEsp()
+        {
+            button_EspServerStart.Text = "Starting...";
+            try
+            {
+                string bindIP = textBox_WebRadarBindIP.Text.Trim();
+                int port = int.Parse(textBox_WebRadarPort.Text.Trim());
+                var externalIP = await WebRadarServer.GetExternalIPAsync();
+                await EspServer.StartEspServer(bindIP, port);
+                button_EspServerStart.Text = "Running...";
+                linkLabel_WebRadarLink.Text = $"host={bindIP}&port={port}&password={textBox_WebRadarPassword.Text}";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, $"ERROR Starting Esp Radar Server: {ex.Message}", Program.Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                button_EspServerStart.Text = "Start";
+            }
+        }
 
         private void button_WebRadarStart_Click(object sender, EventArgs e) =>
             StartWebRadar();
+        private void button_EspServerStart_Click(object sender, EventArgs e) => 
+            StartWebEsp();
 
         private void checkBox_WebRadarUPNP_CheckedChanged(object sender, EventArgs e)
         {

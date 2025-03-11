@@ -371,6 +371,58 @@ namespace eft_dma_shared.Common.DMA
                 throw;
             }
         }
+        /// <summary>
+        /// Read memory into a buffer and validate the right bytes were received.
+        /// </summary>
+        public static byte[] ReadBufferEnsureE(ulong addr, int size)
+        {
+            const int ValidationCount = 3;       
+            try
+            {
+                // Ensure MemoryInterface.Memory is initialized
+                if (MemoryInterface.Memory == null)
+                    throw new Exception("[DMA] MemoryInterface.Memory is not initialized!");
+        
+                byte[][] buffers = new byte[ValidationCount][];
+                for (int i = 0; i < ValidationCount; i++)
+                {
+                    buffers[i] = new byte[size];
+        
+                    unsafe
+                    {
+                        fixed (byte* bufferPtr = buffers[i])
+                        {
+                            uint bytesRead = MemoryInterface.Memory._hVMM.MemRead(
+                                MemoryInterface.Memory.PID, // Process ID
+                                addr,                      // Memory Address
+                                (nint)bufferPtr,           // Pointer to buffer
+                                (uint)size,                // Size to read
+                                Vmm.FLAG_NOCACHE           // No cache flag
+                            );
+        
+                            if (bytesRead != size)
+                                throw new Exception("Incomplete memory read!");
+                        }
+                    }
+                }
+        
+                // Check that all arrays have the same contents
+                for (int i = 1; i < ValidationCount; i++)
+                {
+                    if (!buffers[i].SequenceEqual(buffers[0]))
+                    {
+                        LoneLogging.WriteLine($"[WARN] ReadBufferEnsure() -> 0x{addr:X} did not pass validation!");
+                        return null;
+                    }
+                }
+        
+                return buffers[0];
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"[DMA] ERROR reading buffer at 0x{addr:X}", ex);
+            }
+        }
 
         /// <summary>
         /// Read a chain of pointers and get the final result.

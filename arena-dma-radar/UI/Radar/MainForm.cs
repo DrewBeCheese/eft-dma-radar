@@ -634,7 +634,7 @@ namespace arena_dma_radar.UI.Radar
                 case ChamsManager.ChamsMode.Basic:
                     radioButton_Chams_Basic.Checked = true;
                     break;
-                case ChamsManager.ChamsMode.VisCheck:
+                case ChamsManager.ChamsMode.VisCheckGlow:
                     radioButton_Chams_Vischeck.Checked = true;
                     break;
                 case ChamsManager.ChamsMode.Visible:
@@ -862,7 +862,7 @@ namespace arena_dma_radar.UI.Radar
         {
             var enabled = radioButton_Chams_Vischeck.Checked;
             if (enabled)
-                Chams.Config.Mode = ChamsManager.ChamsMode.VisCheck;
+                Chams.Config.Mode = ChamsManager.ChamsMode.VisCheckGlow;
             flowLayoutPanel_Vischeck.Enabled = enabled;
         }
 

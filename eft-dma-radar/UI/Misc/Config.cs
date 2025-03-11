@@ -688,6 +688,11 @@ namespace eft_dma_radar.UI.Misc
         [JsonPropertyName("hideRaidCode")]
         public bool HideRaidCode { get; set; } = false;
         /// <summary>
+        /// Enables Streamer Mode.
+        /// </summary>
+        [JsonPropertyName("streamerMode")]
+        public bool StreamerMode { get; set; } = false;
+        /// <summary>
         /// Enable No Recoil Feature on Startup.
         /// </summary>
         [JsonPropertyName("enableNoRecoil")]

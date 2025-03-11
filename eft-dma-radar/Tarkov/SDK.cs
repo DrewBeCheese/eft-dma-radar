@@ -15,6 +15,23 @@ namespace SDK
 			public const string ClassName = @"\uE317";
 		}
 
+		public readonly struct StreamerMode
+		{
+			public const uint ClassName_ClassToken = 0x02001D9B; // MDToken
+			public const string ClassName = @"\uE9B4";
+			public const string MethodName = @"IsLocalStreamer";
+		}
+		public readonly struct DogtagComponent
+		{
+			public const uint MethodName_MethodToken = 0x600F206; // MDToken
+			public const string MethodName = @"\uE000";
+		}
+
+		public readonly struct GridItemView
+		{
+			public const uint MethodName_MethodToken = 0x6013CBB; // MDToken
+			public const string MethodName = @"\uE012";
+		}
 		public readonly partial struct AmmoTemplate
 		{
 			public const uint ClassName_ClassToken = 0x20028F2; // MDToken
@@ -71,6 +88,7 @@ namespace SDK
 		public readonly partial struct TarkovApplication
 		{
 			public const uint MenuOperation = 0xF0; // -.\uE933
+			public static readonly uint[] To_Profile = new uint[] { 0xF0, 0xB8, 0x28 };
 		}
 
 		public readonly partial struct MenuOperation
