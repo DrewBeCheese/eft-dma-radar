@@ -65,7 +65,7 @@ namespace eft_dma_radar.Tarkov.WebRadar
                             {
                                 options.AddDefaultPolicy(builder =>
                                 {
-                                    builder.WithOrigins("http://fd-mambo.org:8080")
+                                    builder.WithOrigins("http://192.168.50.160:5010")
                                            .AllowAnyHeader()
                                            .AllowAnyMethod()
                                            .SetIsOriginAllowed(_ => true)

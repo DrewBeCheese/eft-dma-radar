@@ -1600,7 +1600,7 @@ namespace eft_dma_radar.Tarkov.EFTPlayer
             if (dist > Program.Config.MaxDistance)
                 return;
             var showInfo = IsAI ? ESP.Config.AIRendering.ShowLabels : ESP.Config.PlayerRendering.ShowLabels;
-            var showDist = IsAI ? ESP.Config.AIRendering.ShowDist : ESP.Config.PlayerRendering.ShowDist;
+            var showDist = true;//IsAI ? ESP.Config.AIRendering.ShowDist : ESP.Config.PlayerRendering.ShowDist;
             var showWep = IsAI ? ESP.Config.AIRendering.ShowWeapons : ESP.Config.PlayerRendering.ShowWeapons;
             var drawLabel = showInfo || showDist || showWep;
 
