@@ -42,6 +42,7 @@ namespace eft_dma_radar.Tarkov.EFTPlayer.Plugins
         {
             try
             {
+                var playerName = _parent.Name;
                 var handsController = Memory.ReadPtr(_parent.HandsControllerAddr); // or FirearmController
                 var itemBase = Memory.ReadPtr(handsController +
                     (_parent is ClientPlayer ?
