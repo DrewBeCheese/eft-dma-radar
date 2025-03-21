@@ -1,6 +1,8 @@
 ﻿using eft_dma_radar.Tarkov.Loot;
+using eft_dma_shared.Common.Misc.Commercial;
 using eft_dma_shared.Common.Misc.Data;
 using eft_dma_shared.Common.Unity.Collections;
+using System.Xml.Linq;
 
 namespace eft_dma_radar.Tarkov.EFTPlayer.Plugins
 {
@@ -42,7 +44,6 @@ namespace eft_dma_radar.Tarkov.EFTPlayer.Plugins
         {
             try
             {
-                var playerName = _parent.Name;
                 var handsController = Memory.ReadPtr(_parent.HandsControllerAddr); // or FirearmController
                 var itemBase = Memory.ReadPtr(handsController +
                     (_parent is ClientPlayer ?

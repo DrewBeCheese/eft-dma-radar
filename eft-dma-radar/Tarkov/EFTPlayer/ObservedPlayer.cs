@@ -74,6 +74,9 @@ namespace eft_dma_radar.Tarkov.EFTPlayer
         /// Player's Skeleton Bones.
         /// </summary>
         public override Skeleton Skeleton { get; }
+        public ulong ObservedPWA { get; set; }
+        public bool IsAiming { get; set; }
+
         /// <summary>
         /// Player's Current Health Status
         /// </summary>
@@ -148,6 +151,9 @@ namespace eft_dma_radar.Tarkov.EFTPlayer
                 throw new NotImplementedException(nameof(PlayerSide));
             if (IsHuman)
             {
+                var handController = Memory.ReadPtr(HandsControllerAddr);
+                var dickController = Memory.ReadPtr(handController + Offsets.ObservedHandsController.DickController);
+                this.ObservedPWA =  Memory.ReadPtr(dickController + Offsets.DickController.ProceduralWeaponAnimation);
                 Profile = new PlayerProfile(this);
                 if (string.IsNullOrEmpty(AccountID) || !ulong.TryParse(AccountID, out _))
                     throw new ArgumentOutOfRangeException(nameof(AccountID));
@@ -211,10 +217,24 @@ namespace eft_dma_radar.Tarkov.EFTPlayer
                 {
                     UpdateMemberCategory();
                     UpdatePlayerName();
+                    UpdatePlayerAimStatus();
                 }
                 UpdateHealthStatus();
             }
             base.OnRegRefresh(index, registered, isActive);
+        }
+
+        private void UpdatePlayerAimStatus()
+        {
+            try
+            {
+                LoneLogging.WriteLine("About to check player aiming");
+                this.IsAiming = Memory.ReadValue<bool>(this.ObservedPWA + Offsets.ProceduralWeaponAnimation._isAiming, false);
+            }
+            catch (Exception e)
+            {
+                LoneLogging.WriteLine("Getting aim blew up");
+            }
         }
 
         private void UpdatePlayerName()

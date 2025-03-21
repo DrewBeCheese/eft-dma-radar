@@ -12,6 +12,7 @@ using eft_dma_shared.Common.Misc;
 using eft_dma_shared.Common.Misc.MessagePack;
 using eft_dma_shared.Common.Misc.Commercial;
 using eft_dma_radar.Tarkov.Loot;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eft_dma_radar.Tarkov.WebRadar
 {
@@ -63,7 +64,7 @@ namespace eft_dma_radar.Tarkov.WebRadar
                             {
                                 options.AddDefaultPolicy(builder =>
                                 {
-                                    builder.WithOrigins("http://192.168.50.160:5010")
+                                    builder.WithOrigins("http://192.168.50.77:5010")
                                            .AllowAnyHeader()
                                            .AllowAnyMethod()
                                            .SetIsOriginAllowedToAllowWildcardSubdomains();
@@ -196,6 +197,7 @@ namespace eft_dma_radar.Tarkov.WebRadar
                 catch (Exception ex)
                 {
                     Console.WriteLine($"[Worker] Error: {ex.Message}");
+                    throw new Exception("Blew up here");
                 }
         
                 // Wait for the next update
