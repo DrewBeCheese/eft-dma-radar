@@ -30,6 +30,6 @@ namespace eft_dma_radar.Tarkov.WebRadar.Data
         public IEnumerable<WebRadarLoot> Loot { get; set; } // NEW: Loot Data
 
         [Key(5)]
-        public DateTime SendTime { get; set; } = DateTime.Now;
+        public DateTime SendTime { get; set; }
     }
 }

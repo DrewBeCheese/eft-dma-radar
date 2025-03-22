@@ -170,6 +170,7 @@ namespace eft_dma_radar.Tarkov.WebRadar
                         _update.InGame = true;
                         _update.MapID = Memory.MapID;
                         _update.Players = players.Select(p => WebRadarPlayer.CreateFromPlayer(p));
+                        _update.SendTime = DateTime.UtcNow;
         
                         // Loot
                         if (Memory.Loot?.UnfilteredLoot is IReadOnlyCollection<LootItem> loot && loot.Count > 0)
