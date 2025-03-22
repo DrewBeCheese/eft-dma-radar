@@ -68,6 +68,7 @@ namespace eft_dma_radar.Tarkov.WebRadar.Data
         [Key(13)] public float KD { get; init; }
         [Key(14)] public float TotalHoursPlayed { get; init; }
         [Key(15)] public bool IsAiming { get; init; }
+        [Key(16)] public float ZoomLevel { get; init; }
 
         public override string ToString() =>
             $"{Name} [{Type}] - Weapons: {PrimaryWeapon}, {SecondaryWeapon} | Gear: {Armor}, {Helmet}, {Backpack}, {Rig}";
@@ -143,7 +144,8 @@ namespace eft_dma_radar.Tarkov.WebRadar.Data
                 Helmet = player.Gear?.Equipment?.TryGetValue("Headwear", out var helmet) == true ? helmet.Long : "None",
                 Backpack = player.Gear?.Equipment?.TryGetValue("Backpack", out var backpack) == true ? backpack.Long : "None",
                 Rig = player.Gear?.Equipment?.TryGetValue("TacticalVest", out var rig) == true ? rig.Long : "None",
-                IsAiming = isAiming
+                IsAiming = isAiming,
+                ZoomLevel = player.ZoomLevel
             };
         }
     }

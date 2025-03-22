@@ -75,7 +75,10 @@ namespace eft_dma_radar.Tarkov.GameWorld
 
                         if (sightComponent.ScopeZoomValue != 0f)
                             return sightComponent.ScopeZoomValue > 1f;
-                        return sightComponent.GetZoomLevel() > 1f; // Make sure we're actually zoomed in
+
+                        var zoomLevel = sightComponent.GetZoomLevel();
+                        localPlayer.ZoomLevel = zoomLevel;
+                        return zoomLevel > 1f; // Make sure we're actually zoomed in
                     }
                 }
                 return false;
@@ -120,7 +123,7 @@ namespace eft_dma_radar.Tarkov.GameWorld
         }
 
         [StructLayout(LayoutKind.Explicit, Pack = 1)]
-        private readonly ref struct SightComponent // (Type: EFT.InventoryLogic.SightComponent)
+        public readonly ref struct SightComponent // (Type: EFT.InventoryLogic.SightComponent)
 
         {
             [FieldOffset((int)Offsets.SightComponent._template)] private readonly ulong pSightInterface;
@@ -153,7 +156,7 @@ namespace eft_dma_radar.Tarkov.GameWorld
         }
 
         [StructLayout(LayoutKind.Explicit, Pack = 1)]
-        private readonly ref struct SightInterface // _template (Type: -.GInterfaceBB26)
+        public readonly ref struct SightInterface // _template (Type: -.GInterfaceBB26)
 
         {
             [FieldOffset((int)Offsets.SightInterface.Zooms)] private readonly ulong pZooms;

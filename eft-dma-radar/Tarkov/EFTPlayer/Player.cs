@@ -306,6 +306,7 @@ namespace eft_dma_radar.Tarkov.EFTPlayer
         /// Player Rotation Field Address (view angles).
         /// </summary>
         public virtual ulong RotationAddress { get; }
+        public virtual float ZoomLevel { get; set; }
 
         #endregion
 

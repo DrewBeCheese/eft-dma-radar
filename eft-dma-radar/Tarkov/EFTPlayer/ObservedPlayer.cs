@@ -1,14 +1,13 @@
-﻿using eft_dma_radar.Tarkov.API;
-using eft_dma_radar.Tarkov.EFTPlayer.Plugins;
+﻿using eft_dma_radar.Tarkov.EFTPlayer.Plugins;
 using eft_dma_radar.Tarkov.Features.MemoryWrites.Patches;
-using eft_dma_radar.UI.ESP;
+using eft_dma_shared.Common.DMA;
 using eft_dma_shared.Common.DMA.ScatterAPI;
 using eft_dma_shared.Common.Features;
 using eft_dma_shared.Common.Misc.Commercial;
-using eft_dma_shared.Common.Misc.Data;
 using eft_dma_shared.Common.Players;
 using eft_dma_shared.Common.Unity;
-using static SDK.Enums;
+using eft_dma_shared.Common.Unity.Collections;
+using static eft_dma_radar.Tarkov.GameWorld.CameraManager;
 
 namespace eft_dma_radar.Tarkov.EFTPlayer
 {
@@ -230,6 +229,17 @@ namespace eft_dma_radar.Tarkov.EFTPlayer
             {
                 LoneLogging.WriteLine("About to check player aiming");
                 this.IsAiming = Memory.ReadValue<bool>(this.ObservedPWA + Offsets.ProceduralWeaponAnimation._isAiming, false);
+
+                var opticsPtr = Memory.ReadPtr(this.ObservedPWA + Offsets.ProceduralWeaponAnimation._optics);
+                using var optics = MemList<MemPointer>.Get(opticsPtr);
+                if (optics.Count > 0)
+                {
+                    var pSightComponent = Memory.ReadPtr(optics[0] + Offsets.SightNBone.Mod);
+                    var sightComponent = Memory.ReadValue<SightComponent>(pSightComponent);
+
+                    if (sightComponent.ScopeZoomValue != 0f)
+                        this.ZoomLevel = sightComponent.GetZoomLevel();
+                }
             }
             catch (Exception e)
             {
