@@ -306,9 +306,15 @@ namespace SDK
 		public readonly partial struct ObservedHandsController
 		{
 			public const uint ItemInHands = 0x58; // EFT.InventoryLogic.Item
-		}
+			public const uint DickController = 0xA0; // -.\uEC95
+        }
 
-		public readonly partial struct ObservedHealthController
+        public readonly partial struct DickController
+        {
+            public const uint ProceduralWeaponAnimation = 0xB8; // EFT.Animations.ProceduralWeaponAnimation
+        }
+
+        public readonly partial struct ObservedHealthController
 		{
 			public const uint Player = 0x10; // EFT.NextObservedPlayer.ObservedPlayerView
 			public const uint PlayerCorpse = 0x18; // EFT.Interactive.ObservedCorpse
