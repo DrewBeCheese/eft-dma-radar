@@ -12,7 +12,6 @@ using eft_dma_shared.Common.Misc;
 using eft_dma_shared.Common.Misc.MessagePack;
 using eft_dma_shared.Common.Misc.Commercial;
 using eft_dma_radar.Tarkov.Loot;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eft_dma_radar.Tarkov.WebRadar
 {
@@ -170,7 +169,6 @@ namespace eft_dma_radar.Tarkov.WebRadar
                         _update.InGame = true;
                         _update.MapID = Memory.MapID;
                         _update.Players = players.Select(p => WebRadarPlayer.CreateFromPlayer(p));
-                        _update.SendTime = DateTime.UtcNow;
         
                         // Loot
                         if (Memory.Loot?.UnfilteredLoot is IReadOnlyCollection<LootItem> loot && loot.Count > 0)
@@ -191,14 +189,14 @@ namespace eft_dma_radar.Tarkov.WebRadar
                     }
         
                     _update.Version++;
-        
+                    _update.SendTime = DateTime.UtcNow;
+
                     // Send update to all connected clients
                     await hubContext.Clients.All.SendAsync("RadarUpdate", _update);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"[Worker] Error: {ex.Message}");
-                    throw new Exception("Blew up here");
                 }
         
                 // Wait for the next update

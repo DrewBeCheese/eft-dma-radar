@@ -72,12 +72,10 @@ namespace eft_dma_radar.Tarkov.GameWorld
                     {
                         var pSightComponent = Memory.ReadPtr(optics[0] + Offsets.SightNBone.Mod);
                         var sightComponent = Memory.ReadValue<SightComponent>(pSightComponent);
-
                         if (sightComponent.ScopeZoomValue != 0f)
                             return sightComponent.ScopeZoomValue > 1f;
 
                         var zoomLevel = sightComponent.GetZoomLevel();
-                        localPlayer.ZoomLevel = zoomLevel;
                         return zoomLevel > 1f; // Make sure we're actually zoomed in
                     }
                 }

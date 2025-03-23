@@ -380,7 +380,7 @@ namespace SDK
 			public const uint CameraSmoothOut = 0x268; // Single
 			public const uint PositionZeroSum = 0x344; // UnityEngine.Vector3
 			public const uint ShotNeedsFovAdjustments = 0x40F; // Boolean
-		}
+        }
 
 
 		public readonly partial struct HandsContainer

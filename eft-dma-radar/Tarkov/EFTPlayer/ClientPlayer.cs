@@ -16,10 +16,7 @@ namespace eft_dma_radar.Tarkov.EFTPlayer
         /// ICharacterController
         /// </summary>
         public ulong CharacterController { get; }
-        /// <summary>
-        /// Procedural Weapon Animation
-        /// </summary>
-        public ulong PWA { get; }
+
         /// <summary>
         /// PlayerInfo Address (GClass1044)
         /// </summary>

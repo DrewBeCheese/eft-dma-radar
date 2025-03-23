@@ -1,8 +1,9 @@
 ﻿using eft_dma_radar.Tarkov.Loot;
+using eft_dma_shared.Common.DMA;
 using eft_dma_shared.Common.Misc.Commercial;
 using eft_dma_shared.Common.Misc.Data;
 using eft_dma_shared.Common.Unity.Collections;
-using System.Xml.Linq;
+using static eft_dma_radar.Tarkov.GameWorld.CameraManager;
 
 namespace eft_dma_radar.Tarkov.EFTPlayer.Plugins
 {
@@ -37,6 +38,37 @@ namespace eft_dma_radar.Tarkov.EFTPlayer.Plugins
             _parent = player;
         }
 
+        public bool IsAiming { get; set; }
+        public float ZoomLevel { get; set; }
+
+
+
+        private void UpdatePlayerAimStatus()
+        {
+            try
+            {
+                if (_parent.IsHuman)
+                {
+                    this.IsAiming = Memory.ReadValue<bool>(_parent.PWA + Offsets.ProceduralWeaponAnimation._isAiming, false);
+                    //var opticsPtr = Memory.ReadPtr(_parent.PWA + Offsets.ProceduralWeaponAnimation._optics);
+
+                    //using var optics = MemList<MemPointer>.Get(opticsPtr);
+                    //if (optics.Count > 0)
+                    //{
+                    //    var pSightComponent = Memory.ReadPtr(optics[0] + Offsets.SightNBone.Mod);
+                    //    var sightComponent = Memory.ReadValue<SightComponent>(pSightComponent);
+                    //    this.ZoomLevel = sightComponent.GetZoomLevel();
+                    //    LoneLogging.WriteLine($"ZOOM VALUE: {sightComponent.ScopeZoomValue} || {sightComponent.GetZoomLevel()}");
+                    //}
+                }
+
+            }
+            catch (Exception e)
+            {
+                LoneLogging.WriteLine("Getting aim blew up");
+            }
+        }
+
         /// <summary>
         /// Check if item in player's hands has changed.
         /// </summary>
@@ -44,6 +76,7 @@ namespace eft_dma_radar.Tarkov.EFTPlayer.Plugins
         {
             try
             {
+                UpdatePlayerAimStatus();
                 var handsController = Memory.ReadPtr(_parent.HandsControllerAddr); // or FirearmController
                 var itemBase = Memory.ReadPtr(handsController +
                     (_parent is ClientPlayer ?
