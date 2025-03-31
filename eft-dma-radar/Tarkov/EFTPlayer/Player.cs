@@ -306,6 +306,9 @@ namespace eft_dma_radar.Tarkov.EFTPlayer
         /// Player Rotation Field Address (view angles).
         /// </summary>
         public virtual ulong RotationAddress { get; }
+        public virtual float ZoomLevel { get; set; }
+        public virtual ulong PWA { get; set; }
+        public bool IsAiming { get; set; }
 
         #endregion
 
@@ -455,6 +458,8 @@ namespace eft_dma_radar.Tarkov.EFTPlayer
             if (isActive)
             {
                 this.SetAlive();
+                this.IsAiming = Hands.IsAiming;
+                this.ZoomLevel = Hands.ZoomLevel;
             }
             else if (this.IsAlive) // Not in list, but alive
             {

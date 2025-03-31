@@ -1,14 +1,13 @@
-﻿using eft_dma_radar.Tarkov.API;
-using eft_dma_radar.Tarkov.EFTPlayer.Plugins;
+﻿using eft_dma_radar.Tarkov.EFTPlayer.Plugins;
 using eft_dma_radar.Tarkov.Features.MemoryWrites.Patches;
-using eft_dma_radar.UI.ESP;
+using eft_dma_shared.Common.DMA;
 using eft_dma_shared.Common.DMA.ScatterAPI;
 using eft_dma_shared.Common.Features;
 using eft_dma_shared.Common.Misc.Commercial;
-using eft_dma_shared.Common.Misc.Data;
 using eft_dma_shared.Common.Players;
 using eft_dma_shared.Common.Unity;
-using static SDK.Enums;
+using eft_dma_shared.Common.Unity.Collections;
+using static eft_dma_radar.Tarkov.GameWorld.CameraManager;
 
 namespace eft_dma_radar.Tarkov.EFTPlayer
 {
@@ -74,8 +73,6 @@ namespace eft_dma_radar.Tarkov.EFTPlayer
         /// Player's Skeleton Bones.
         /// </summary>
         public override Skeleton Skeleton { get; }
-        public ulong ObservedPWA { get; set; }
-        public bool IsAiming { get; set; }
 
         /// <summary>
         /// Player's Current Health Status
@@ -153,7 +150,7 @@ namespace eft_dma_radar.Tarkov.EFTPlayer
             {
                 var handController = Memory.ReadPtr(HandsControllerAddr);
                 var dickController = Memory.ReadPtr(handController + Offsets.ObservedHandsController.DickController);
-                this.ObservedPWA =  Memory.ReadPtr(dickController + Offsets.DickController.ProceduralWeaponAnimation);
+                this.PWA =  Memory.ReadPtr(dickController + Offsets.DickController.ProceduralWeaponAnimation);
                 Profile = new PlayerProfile(this);
                 if (string.IsNullOrEmpty(AccountID) || !ulong.TryParse(AccountID, out _))
                     throw new ArgumentOutOfRangeException(nameof(AccountID));
@@ -217,25 +214,36 @@ namespace eft_dma_radar.Tarkov.EFTPlayer
                 {
                     UpdateMemberCategory();
                     UpdatePlayerName();
-                    UpdatePlayerAimStatus();
+                    //UpdatePlayerAimStatus();
                 }
                 UpdateHealthStatus();
             }
             base.OnRegRefresh(index, registered, isActive);
         }
 
-        private void UpdatePlayerAimStatus()
-        {
-            try
-            {
-                LoneLogging.WriteLine("About to check player aiming");
-                this.IsAiming = Memory.ReadValue<bool>(this.ObservedPWA + Offsets.ProceduralWeaponAnimation._isAiming, false);
-            }
-            catch (Exception e)
-            {
-                LoneLogging.WriteLine("Getting aim blew up");
-            }
-        }
+        //private void UpdatePlayerAimStatus()
+        //{
+        //    try
+        //    {
+        //        LoneLogging.WriteLine("About to check player aiming");
+        //        this.IsAiming = Memory.ReadValue<bool>(this.PWA + Offsets.ProceduralWeaponAnimation._isAiming, false);
+
+        //        var opticsPtr = Memory.ReadPtr(this.PWA + Offsets.ProceduralWeaponAnimation._optics);
+        //        using var optics = MemList<MemPointer>.Get(opticsPtr);
+        //        if (optics.Count > 0)
+        //        {
+        //            var pSightComponent = Memory.ReadPtr(optics[0] + Offsets.SightNBone.Mod);
+        //            var sightComponent = Memory.ReadValue<SightComponent>(pSightComponent);
+
+        //            if (sightComponent.ScopeZoomValue != 0f)
+        //                this.ZoomLevel = sightComponent.GetZoomLevel();
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        LoneLogging.WriteLine("Getting aim blew up");
+        //    }
+        //}
 
         private void UpdatePlayerName()
         {
