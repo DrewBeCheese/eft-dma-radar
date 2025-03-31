@@ -69,6 +69,7 @@ namespace eft_dma_radar.Tarkov.WebRadar.Data
         [Key(14)] public float TotalHoursPlayed { get; init; }
         [Key(15)] public bool IsAiming { get; init; }
         [Key(16)] public float ZoomLevel { get; init; }
+        [Key(17)] public IEnumerable<WebRadarLoot> Loot { get; init; }
 
         public override string ToString() =>
             $"{Name} [{Type}] - Weapons: {PrimaryWeapon}, {SecondaryWeapon} | Gear: {Armor}, {Helmet}, {Backpack}, {Rig}";
@@ -145,7 +146,8 @@ namespace eft_dma_radar.Tarkov.WebRadar.Data
                 Backpack = player.Gear?.Equipment?.TryGetValue("Backpack", out var backpack) == true ? backpack.Long : "None",
                 Rig = player.Gear?.Equipment?.TryGetValue("TacticalVest", out var rig) == true ? rig.Long : "None",
                 IsAiming = isAiming,
-                ZoomLevel = player.ZoomLevel
+                ZoomLevel = player.ZoomLevel,
+                Loot = player.Gear?.Loot.Select(l => WebRadarLoot.CreateFromLoot(l))
             };
         }
     }
