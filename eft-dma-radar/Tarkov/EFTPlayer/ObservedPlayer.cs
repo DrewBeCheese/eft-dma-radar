@@ -221,30 +221,6 @@ namespace eft_dma_radar.Tarkov.EFTPlayer
             base.OnRegRefresh(index, registered, isActive);
         }
 
-        //private void UpdatePlayerAimStatus()
-        //{
-        //    try
-        //    {
-        //        LoneLogging.WriteLine("About to check player aiming");
-        //        this.IsAiming = Memory.ReadValue<bool>(this.PWA + Offsets.ProceduralWeaponAnimation._isAiming, false);
-
-        //        var opticsPtr = Memory.ReadPtr(this.PWA + Offsets.ProceduralWeaponAnimation._optics);
-        //        using var optics = MemList<MemPointer>.Get(opticsPtr);
-        //        if (optics.Count > 0)
-        //        {
-        //            var pSightComponent = Memory.ReadPtr(optics[0] + Offsets.SightNBone.Mod);
-        //            var sightComponent = Memory.ReadValue<SightComponent>(pSightComponent);
-
-        //            if (sightComponent.ScopeZoomValue != 0f)
-        //                this.ZoomLevel = sightComponent.GetZoomLevel();
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        LoneLogging.WriteLine("Getting aim blew up");
-        //    }
-        //}
-
         private void UpdatePlayerName()
         {
             try
