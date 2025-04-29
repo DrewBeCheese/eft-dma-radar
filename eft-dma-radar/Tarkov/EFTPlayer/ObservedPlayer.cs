@@ -214,7 +214,6 @@ namespace eft_dma_radar.Tarkov.EFTPlayer
                 {
                     UpdateMemberCategory();
                     UpdatePlayerName();
-                    //UpdatePlayerAimStatus();
                 }
                 UpdateHealthStatus();
             }

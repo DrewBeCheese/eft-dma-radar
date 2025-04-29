@@ -11,6 +11,7 @@ using eft_dma_shared.Common.Unity;
 using eft_dma_radar.Tarkov.Features.MemoryWrites;
 using eft_dma_shared.Common.Misc.Data;
 using eft_dma_shared.Common.Misc.Commercial;
+using LonesEFTRadar.Tarkov.GameWorld;
 
 namespace eft_dma_radar.Tarkov.GameWorld
 {
@@ -35,10 +36,12 @@ namespace eft_dma_radar.Tarkov.GameWorld
         private readonly LootManager _lootManager;
         private readonly ExitManager _exfilManager;
         private readonly ExplosivesManager _grenadeManager;
+        private readonly WorldInteractablesManager _worldInteractablesManager;
         private readonly Thread _t1;
         private readonly Thread _t2;
         private readonly Thread _t3;
         private readonly Thread _t4;
+        private readonly Thread _t5;
 
         /// <summary>
         /// Map ID of Current Map.
@@ -51,6 +54,7 @@ namespace eft_dma_radar.Tarkov.GameWorld
         public IReadOnlyCollection<IExitPoint> Exits => _exfilManager;
         public LocalPlayer LocalPlayer => _rgtPlayers?.LocalPlayer;
         public LootManager Loot => _lootManager;
+        public WorldInteractablesManager Interactables => _worldInteractablesManager;
 
         public QuestManager QuestManager { get; private set; }
 
@@ -112,6 +116,10 @@ namespace eft_dma_radar.Tarkov.GameWorld
             {
                 IsBackground = true
             };
+            _t5 = new Thread(() => { InteractablesWorker(ct); })
+            {
+                IsBackground = true
+            };
             // Reset static assets for a new raid/game.
             Player.Reset();
             var rgtPlayersAddr = Memory.ReadPtr(localGameWorld + Offsets.ClientLocalGameWorld.RegisteredPlayers, false);
@@ -121,6 +129,7 @@ namespace eft_dma_radar.Tarkov.GameWorld
             _lootManager = new(localGameWorld, ct);
             _exfilManager = new(localGameWorld, _rgtPlayers.LocalPlayer.IsPmc);
             _grenadeManager = new(localGameWorld);
+            _worldInteractablesManager = new(localGameWorld);
         }
 
         /// <summary>
@@ -132,6 +141,7 @@ namespace eft_dma_radar.Tarkov.GameWorld
             _t2.Start();
             _t3.Start();
             _t4.Start();
+            _t5.Start();
         }
 
         /// <summary>
@@ -211,6 +221,10 @@ namespace eft_dma_radar.Tarkov.GameWorld
             catch (RaidEnded)
             {
                 LoneLogging.WriteLine("Raid has ended!");
+                foreach (var item in _worldInteractablesManager._Doors)
+                {
+                    LoneLogging.WriteLine($"ANDREW: {item.Id} || {item.KeyId} || {item.DoorState} || {item.Position}");
+                }
                 Dispose();
             }
             catch (Exception ex)
@@ -578,6 +592,33 @@ namespace eft_dma_radar.Tarkov.GameWorld
             }
         }
 
+        private void InteractablesWorker(CancellationToken ct)
+        {
+            if (_disposed) return;
+            try
+            {
+                LoneLogging.WriteLine("Interactables thread starting...");
+                while (InRaid)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    RefreshWorldInteractables();
+                    Thread.Sleep(750);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+            }
+            catch (Exception ex)
+            {
+                LoneLogging.WriteLine($"CRITICAL ERROR on Interactables Thread: {ex}");
+                Dispose(); // Game object is in a corrupted state --> Dispose
+            }
+            finally
+            {
+                LoneLogging.WriteLine("Interactables thread stopping...");
+            }
+        }
+
         private void RefreshCameraManager()
         {
             try
@@ -588,6 +629,11 @@ namespace eft_dma_radar.Tarkov.GameWorld
             {
                 //LoneLogging.WriteLine($"ERROR Refreshing Cameras! {ex}");
             }
+        }
+
+        private void RefreshWorldInteractables()
+        {
+            _worldInteractablesManager.Refresh();
         }
 
         /// <summary>

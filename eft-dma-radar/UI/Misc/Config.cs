@@ -788,6 +788,12 @@ namespace eft_dma_radar.UI.Misc
         /// </summary>
         [JsonPropertyName("fastLoadUnload")]
         public bool FastLoadUnload { get; set; } = false;
+
+        /// <summary>
+        /// Open any door.
+        /// </summary>
+        [JsonPropertyName("keylessEntry")]
+        public bool KeylessEntry { get; set; } = false;
     }
 
     public sealed class SuperSpeedConfig

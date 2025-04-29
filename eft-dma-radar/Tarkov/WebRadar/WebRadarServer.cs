@@ -12,6 +12,7 @@ using eft_dma_shared.Common.Misc;
 using eft_dma_shared.Common.Misc.MessagePack;
 using eft_dma_shared.Common.Misc.Commercial;
 using eft_dma_radar.Tarkov.Loot;
+using LonesEFTRadar.Tarkov.WebRadar.Data;
 
 namespace eft_dma_radar.Tarkov.WebRadar
 {
@@ -63,7 +64,8 @@ namespace eft_dma_radar.Tarkov.WebRadar
                             {
                                 options.AddDefaultPolicy(builder =>
                                 {
-                                    builder.WithOrigins("http://192.168.50.77:5010")
+                                    builder.AllowAnyOrigin()
+                                    //builder.WithOrigins("http://192.168.50.170:5010")
                                            .AllowAnyHeader()
                                            .AllowAnyMethod()
                                            .SetIsOriginAllowedToAllowWildcardSubdomains();
@@ -178,6 +180,11 @@ namespace eft_dma_radar.Tarkov.WebRadar
                         else
                         {
                             _update.Loot = null;
+                        }
+
+                        if (Memory.Game?.Interactables != null)
+                        {
+                            _update.Doors = Memory.Game?.Interactables._Doors.Select(x => WebRadarDoor.CreateFromDoor(x));
                         }
                     }
                     else
