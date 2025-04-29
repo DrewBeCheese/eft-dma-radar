@@ -1,4 +1,5 @@
-﻿using MessagePack;
+﻿using LonesEFTRadar.Tarkov.WebRadar.Data;
+using MessagePack;
 
 namespace eft_dma_radar.Tarkov.WebRadar.Data
 {
@@ -31,5 +32,8 @@ namespace eft_dma_radar.Tarkov.WebRadar.Data
 
         [Key(5)]
         public DateTime SendTime { get; set; }
+
+        [Key(6)]
+        public IEnumerable<WebRadarDoor> Doors { get; set; } = null;
     }
 }

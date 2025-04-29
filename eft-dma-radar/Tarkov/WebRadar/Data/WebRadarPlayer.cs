@@ -70,6 +70,7 @@ namespace eft_dma_radar.Tarkov.WebRadar.Data
         [Key(15)] public bool IsAiming { get; init; }
         [Key(16)] public float ZoomLevel { get; init; }
         [Key(17)] public IEnumerable<WebRadarLoot> Loot { get; init; }
+        [Key(18)] public int GroupId { get; init; }
 
         public override string ToString() =>
             $"{Name} [{Type}] - Weapons: {PrimaryWeapon}, {SecondaryWeapon} | Gear: {Armor}, {Helmet}, {Backpack}, {Rig}";
@@ -147,7 +148,8 @@ namespace eft_dma_radar.Tarkov.WebRadar.Data
                 Rig = player.Gear?.Equipment?.TryGetValue("TacticalVest", out var rig) == true ? rig.Long : "None",
                 IsAiming = isAiming,
                 ZoomLevel = player.ZoomLevel,
-                Loot = player.Gear?.Loot.Select(l => WebRadarLoot.CreateFromLoot(l))
+                Loot = player.Gear?.Loot.Select(l => WebRadarLoot.CreateFromLoot(l)),
+                GroupId = player.GroupID
             };
         }
     }
