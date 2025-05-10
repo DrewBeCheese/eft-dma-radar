@@ -42,6 +42,9 @@ namespace eft_dma_radar.Tarkov.WebRadar.Data
         /// </summary>
         [Key(5)]
         public bool IsBackpack { get; init; }
+
+        [Key(6)]
+        public string BsgId { get; init; }
         /// <summary>
         /// Create a WebRadarLoot object from a LootItem.
         /// </summary>
@@ -56,7 +59,8 @@ namespace eft_dma_radar.Tarkov.WebRadar.Data
                 Position = loot.Position,
                 IsMeds = loot.IsMeds,
                 IsFood = loot.IsFood,
-                IsBackpack = loot.IsBackpack
+                IsBackpack = loot.IsBackpack,
+                BsgId = loot.ID
             };
         }
     }
