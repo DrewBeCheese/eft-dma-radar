@@ -13,6 +13,7 @@ using eft_dma_shared.Common.Misc.MessagePack;
 using eft_dma_shared.Common.Misc.Commercial;
 using eft_dma_radar.Tarkov.Loot;
 using LonesEFTRadar.Tarkov.WebRadar.Data;
+using Microsoft.AspNetCore.Http;
 
 namespace eft_dma_radar.Tarkov.WebRadar
 {
@@ -65,7 +66,6 @@ namespace eft_dma_radar.Tarkov.WebRadar
                                 options.AddDefaultPolicy(builder =>
                                 {
                                     builder.AllowAnyOrigin()
-                                    //builder.WithOrigins("http://192.168.50.170:5010")
                                            .AllowAnyHeader()
                                            .AllowAnyMethod()
                                            .SetIsOriginAllowedToAllowWildcardSubdomains();
@@ -79,6 +79,21 @@ namespace eft_dma_radar.Tarkov.WebRadar
                             app.UseEndpoints(endpoints =>
                             {
                                 endpoints.MapHub<RadarServerHub>("/hub/0f908ff7-e614-6a93-60a3-cee36c9cea91");
+                                endpoints.MapGet("/{path}", async (HttpContext context, string path) =>
+                                {
+                                    try
+                                    {
+                                        var client = new HttpClient();
+                                        byte[] imageBytes = await client.GetByteArrayAsync($"https://assets.tarkov.dev/{path}");
+                                        context.Response.Headers.CacheControl = $"public,max-age=604800";
+                                        return TypedResults.Bytes(imageBytes, "image/webp");
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        LoneLogging.WriteLine($"API ERROR: {e.Message}");
+                                        return Results.Problem(e.Message);
+                                    }
+                                });
                             });
                         })
                         .UseUrls($"http://{FormatIPForURL(ip)}:{port}");
